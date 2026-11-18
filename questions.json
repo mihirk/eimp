@@ -1,0 +1,207 @@
+{
+  "version": 2,
+  "title": "Everyone is an Intermediate Player",
+  "scoring": {
+    "method": "Points for each answer are added, divided by the maximum available points, and scaled to 100. Level ranges are inclusive.",
+    "scale": 100
+  },
+  "categories": {
+    "tactics": {
+      "label": "Tactics",
+      "tip": "Play one set with a single goal: move as a pair. After a good serve, return, or lob, look for the net together instead of making the decision independently."
+    },
+    "technique": {
+      "label": "Technique",
+      "tip": "Use the same racquet regularly and prioritise control over power. Practise compact volleys at the feet, a reliable bandeja, and a soft chiquita before adding more smash."
+    }
+  },
+  "perfectScoreTip": "Nothing. Absolutely nothing. Please send match footage to verify this result—your group chat has some questions too.",
+  "levels": [
+    {
+      "label": "Beginner",
+      "min": 0,
+      "max": 19,
+      "summary": "The glass is winning more points than you are, but everyone starts somewhere. Keep the ball in play, stay curious, and prepare to fall in love with the lob."
+    },
+    {
+      "label": "Beginner+",
+      "min": 20,
+      "max": 34,
+      "summary": "You know which end of the racket to hold and the walls are starting to make sense. Now turn those occasional good decisions into reliable habits."
+    },
+    {
+      "label": "Intermediate-",
+      "min": 35,
+      "max": 49,
+      "summary": "The name checks out. You have the foundations, a few trusty shots, and at least one rally per game that makes you feel considerably better than this rating."
+    },
+    {
+      "label": "Intermediate+",
+      "min": 50,
+      "max": 64,
+      "summary": "Your court sense is properly useful now. You construct points and defend the glass, but consistency and shot selection still separate your best rallies from the rest."
+    },
+    {
+      "label": "Advanced-",
+      "min": 65,
+      "max": 74,
+      "summary": "You are no longer just hitting shots—you are building points. Tighten the weakest part of your game and your partner may finally stop giving you advice."
+    },
+    {
+      "label": "Advanced",
+      "min": 75,
+      "max": 84,
+      "summary": "Strong decisions, reliable technique, and a healthy respect for net position. You are the person new players watch and quietly copy between points."
+    },
+    {
+      "label": "Advanced+",
+      "min": 85,
+      "max": 92,
+      "summary": "Your padel brain is doing serious work. You read rebounds, manage space, and choose overheads with intent. Only the finest margins—and your ego—remain."
+    },
+    {
+      "label": "Pro",
+      "min": 93,
+      "max": 99,
+      "summary": "Absurdly good court sense. You see patterns before they happen and make difficult shots look sensible. One tiny gap remains between you and total padel enlightenment."
+    },
+    {
+      "label": "Bro You Tapia",
+      "min": 100,
+      "max": 100,
+      "summary": "Perfect score. Apparently you have soft hands, a galaxy brain, and a back glass that owes you money. Please take the rest of the day off."
+    }
+  ],
+  "questions": [
+    {
+      "id": "serve-and-run",
+      "category": "tactics",
+      "context": "Tactics · After your serve",
+      "prompt": "Do you serve and instantly run to the net no matter what?",
+      "whyItMatters": "Taking the net after serving is usually a good instinct, but moving under control lets you read the return instead of getting caught halfway.",
+      "answers": [
+        { "text": "Yes—I sprint in every time, whatever the return looks like", "points": 1 },
+        { "text": "I move in under control and read the return as I go", "points": 4 },
+        { "text": "No—I usually stay back after serving", "points": 2 },
+        { "text": "I honestly have not thought about my next move", "points": 0 }
+      ]
+    },
+    {
+      "id": "preferred-side",
+      "category": "tactics",
+      "context": "Tactics · Knowing your side",
+      "prompt": "Do you have a preferred side—and do you know how to position yourself on it?",
+      "whyItMatters": "A consistent side helps you learn its responsibilities, cover the middle with your partner, and avoid hesitation when you need to switch.",
+      "answers": [
+        { "text": "Not really—I just stand wherever I start", "points": 0 },
+        { "text": "I have a preferred side, but positioning is mostly guesswork", "points": 2 },
+        { "text": "I know my side and basic positioning, but switches can confuse me", "points": 3 },
+        { "text": "Yes—I know my responsibilities and how to switch with my partner", "points": 4 }
+      ]
+    },
+    {
+      "id": "bad-lob-left",
+      "category": "tactics",
+      "context": "Tactics · Defending your mistake",
+      "prompt": "Your lob lands short and the left-side player has an easy overhead. What do you do?",
+      "whyItMatters": "A bad lob usually means an overhead is coming. Moving back together buys time and avoids being stuck at the net as easy targets.",
+      "answers": [
+        { "text": "Stay at the net and hope they miss", "points": 0 },
+        { "text": "Run forward to try to put them off", "points": 1 },
+        { "text": "Move back with my partner and prepare to defend", "points": 4 },
+        { "text": "Switch sides and leave everything to my partner", "points": 1 }
+      ]
+    },
+    {
+      "id": "partner-lobbed-after-serve",
+      "category": "tactics",
+      "context": "Tactics · Covering your partner",
+      "prompt": "You serve, and the returner lobs over your partner at the net. Who deals with the lob?",
+      "whyItMatters": "If the server turns back, the team loses its shape. Your partner covers the lob while you continue forward and keep the net position useful.",
+      "answers": [
+        { "text": "I chase it from behind while my partner stays at the net", "points": 0 },
+        { "text": "My partner turns to cover it while I keep moving toward the net", "points": 4 },
+        { "text": "Whoever shouts first goes for it", "points": 1 },
+        { "text": "We both turn and run back together", "points": 1 }
+      ]
+    },
+    {
+      "id": "move-after-return",
+      "category": "tactics",
+      "context": "Tactics · After your return",
+      "prompt": "You hit a good, deep return of serve. What is your next move?",
+      "whyItMatters": "A deep return gives you time to challenge the net. Moving forward with control turns a good shot into a better team position.",
+      "answers": [
+        { "text": "Stay on the baseline and watch how the rally develops", "points": 1 },
+        { "text": "Move forward under control and join my partner", "points": 4 },
+        { "text": "Sprint all the way in without watching the next shot", "points": 2 },
+        { "text": "Switch sides with my partner before doing anything", "points": 0 }
+      ]
+    },
+    {
+      "id": "consistent-racquet",
+      "category": "technique",
+      "context": "Technique · Your setup",
+      "prompt": "Do you play with your own racquet, or do you usually rent one?",
+      "whyItMatters": "Using the same racquet builds a reliable feel for its weight and response, making soft shots, volleys, and overheads easier to repeat.",
+      "answers": [
+        { "text": "I use a different rental almost every time I play", "points": 0 },
+        { "text": "I own one, but I often switch models or am still getting used to it", "points": 2 },
+        { "text": "I regularly use the same racquet and know its basic feel", "points": 3 },
+        { "text": "I have my own racquet and know how it responds on different shots", "points": 4 }
+      ]
+    },
+    {
+      "id": "fast-volley-control",
+      "category": "technique",
+      "context": "Technique · Controlling pace",
+      "prompt": "A fast ball comes at you at the net. What does your volley usually look like?",
+      "whyItMatters": "A short, compact volley gives the ball less chance to fly long or sit up, especially when there is no time for a backswing.",
+      "answers": [
+        { "text": "I take a full swing and try to add even more pace", "points": 0 },
+        { "text": "I can block it, but my volleys often float or sit up", "points": 2 },
+        { "text": "I use a short, compact volley and usually keep the ball low", "points": 3 },
+        { "text": "I stay compact and balanced, and can choose a punch, drop, or angle", "points": 4 }
+      ]
+    },
+    {
+      "id": "volley-placement",
+      "category": "technique",
+      "context": "Technique · Aiming your volley",
+      "prompt": "Can you aim your volleys at the opponents’ feet or into the middle during a match?",
+      "whyItMatters": "Volleys at the feet force opponents to hit upward, while the middle can create hesitation. Aiming low is often more useful than hitting hard.",
+      "answers": [
+        { "text": "I mostly aim anywhere inside the court and hope for the best", "points": 0 },
+        { "text": "I can aim there in practice, but not consistently in matches", "points": 2 },
+        { "text": "I can reliably find the feet or middle in normal rallies", "points": 3 },
+        { "text": "I can choose the feet, middle, or an angle based on their positioning", "points": 4 }
+      ]
+    },
+    {
+      "id": "overhead-selection",
+      "category": "technique",
+      "context": "Technique · Choosing an overhead",
+      "prompt": "Can you choose between different overheads, or does every high ball become a smash?",
+      "whyItMatters": "Different overheads solve different problems: a flat smash attacks an easy ball, while a bandeja or víbora can keep you at the net without forcing a winner.",
+      "answers": [
+        { "text": "Every overhead is a full-power flat smash", "points": 0 },
+        { "text": "I have a smash, but the kick smash, víbora, and bandeja are mostly theoretical", "points": 2 },
+        { "text": "I can bandeja to keep the net and flat-smash easy balls", "points": 3 },
+        { "text": "I can choose and execute flat and kick smashes, víboras, and bandejas", "points": 4 }
+      ]
+    },
+    {
+      "id": "chiquita-execution",
+      "category": "technique",
+      "context": "Technique · The soft shot",
+      "prompt": "Can you execute a chiquita—a soft shot that dips at the net players’ feet?",
+      "whyItMatters": "A good chiquita makes the net players volley upward, giving you and your partner a chance to move forward instead of staying stuck in defence.",
+      "answers": [
+        { "text": "I am not sure what a chiquita is or have never tried one", "points": 0 },
+        { "text": "I know the shot, but my execution is inconsistent", "points": 2 },
+        { "text": "I can consistently play it toward their feet in matches", "points": 3 },
+        { "text": "I can play it consistently and move forward behind it", "points": 4 }
+      ]
+    }
+  ]
+}
