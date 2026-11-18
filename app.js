@@ -20,6 +20,11 @@ const elements = {
   answerList: document.querySelector('#answerList'),
   questionInsight: document.querySelector('#questionInsight'),
   questionInsightText: document.querySelector('#questionInsightText'),
+  mobileInsightButton: document.querySelector('#mobileInsightButton'),
+  explanationDialog: document.querySelector('#explanationDialog'),
+  explanationDialogText: document.querySelector('#explanationDialogText'),
+  closeExplanationDialog: document.querySelector('#closeExplanationDialog'),
+  gotItButton: document.querySelector('#gotItButton'),
   backButton: document.querySelector('#backButton'),
   nextButton: document.querySelector('#nextButton'),
   nextButtonText: document.querySelector('#nextButtonText'),
@@ -51,16 +56,39 @@ const state = {
   toastTimer: null,
 };
 
+function isMobileQuizLayout() {
+  return window.matchMedia('(max-width: 759px)').matches;
+}
+
 function showScreen(name) {
+  const isQuiz = name === 'quiz';
   Object.entries(screens).forEach(([screenName, screen]) => {
     screen.hidden = screenName !== name;
   });
   elements.headerLink.hidden = name !== 'landing';
+  document.documentElement.classList.toggle('quiz-active', isQuiz);
+  document.body.classList.toggle('quiz-active', isQuiz);
 }
 
-function scrollToTop() {
+function scrollToTop(instant = false) {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+  window.scrollTo({ top: 0, behavior: instant || reduceMotion ? 'auto' : 'smooth' });
+}
+
+function openDialog(dialog) {
+  if (typeof dialog.showModal === 'function') {
+    dialog.showModal();
+  } else {
+    dialog.setAttribute('open', '');
+  }
+}
+
+function closeDialog(dialog) {
+  if (typeof dialog.close === 'function') {
+    dialog.close();
+  } else {
+    dialog.removeAttribute('open');
+  }
 }
 
 function validateData(data) {
@@ -116,10 +144,24 @@ function startQuiz() {
   state.currentQuestion = 0;
   state.answers = new Array(state.data.questions.length).fill(undefined);
   state.result = null;
+  if (isMobileQuizLayout()) {
+    scrollToTop(true);
+  }
   showScreen('quiz');
   renderQuestion();
-  scrollToTop();
+  if (!isMobileQuizLayout()) {
+    scrollToTop();
+  }
   elements.questionTitle.focus({ preventScroll: true });
+}
+
+function updateQuestionInsights() {
+  const question = state.data.questions[state.currentQuestion];
+  const visible = state.answers[state.currentQuestion] !== undefined;
+  elements.questionInsight.hidden = !visible;
+  elements.mobileInsightButton.hidden = !visible;
+  elements.questionInsightText.textContent = question.whyItMatters;
+  elements.explanationDialogText.textContent = question.whyItMatters;
 }
 
 function selectAnswer(answerIndex, moveFocus = false) {
@@ -130,8 +172,7 @@ function selectAnswer(answerIndex, moveFocus = false) {
     option.setAttribute('aria-checked', String(selected));
     option.tabIndex = selected ? 0 : -1;
   });
-  elements.questionInsight.hidden = false;
-  elements.questionInsightText.textContent = state.data.questions[state.currentQuestion].whyItMatters;
+  updateQuestionInsights();
   elements.nextButton.disabled = false;
   if (moveFocus) options[answerIndex].focus();
 }
@@ -192,15 +233,23 @@ function renderQuestion() {
     fragment.append(option);
   });
   elements.answerList.replaceChildren(fragment);
-  elements.questionInsight.hidden = selectedAnswer === undefined;
-  elements.questionInsightText.textContent = question.whyItMatters;
+  updateQuestionInsights();
+}
+
+function resetQuestionScroll() {
+  const card = screens.quiz.querySelector('.question-card');
+  if (card) card.scrollTop = 0;
 }
 
 function goBack() {
   if (state.currentQuestion === 0) return;
   state.currentQuestion -= 1;
   renderQuestion();
-  scrollToTop();
+  if (isMobileQuizLayout()) {
+    resetQuestionScroll();
+  } else {
+    scrollToTop();
+  }
   elements.questionTitle.focus({ preventScroll: true });
 }
 
@@ -212,7 +261,11 @@ function goNext() {
   }
   state.currentQuestion += 1;
   renderQuestion();
-  scrollToTop();
+  if (isMobileQuizLayout()) {
+    resetQuestionScroll();
+  } else {
+    scrollToTop();
+  }
   elements.questionTitle.focus({ preventScroll: true });
 }
 
@@ -359,11 +412,7 @@ function openWhatsAppFallback(image, text) {
   elements.downloadShareCard.href = image.url;
   elements.downloadShareCard.download = image.fileName;
   elements.openWhatsApp.href = `https://wa.me/?text=${encodeURIComponent(text)}`;
-  if (typeof elements.whatsappDialog.showModal === 'function') {
-    elements.whatsappDialog.showModal();
-  } else {
-    elements.whatsappDialog.setAttribute('open', '');
-  }
+  openDialog(elements.whatsappDialog);
 }
 
 async function shareResult() {
@@ -400,10 +449,16 @@ elements.retakeButton.addEventListener('click', startQuiz);
 elements.backButton.addEventListener('click', goBack);
 elements.nextButton.addEventListener('click', goNext);
 elements.answerList.addEventListener('keydown', handleAnswerKeys);
+elements.mobileInsightButton.addEventListener('click', () => openDialog(elements.explanationDialog));
+elements.closeExplanationDialog.addEventListener('click', () => closeDialog(elements.explanationDialog));
+elements.gotItButton.addEventListener('click', () => closeDialog(elements.explanationDialog));
+elements.explanationDialog.addEventListener('click', (event) => {
+  if (event.target === elements.explanationDialog) closeDialog(elements.explanationDialog);
+});
 elements.shareButton.addEventListener('click', shareResult);
-elements.closeShareDialog.addEventListener('click', () => elements.whatsappDialog.close());
+elements.closeShareDialog.addEventListener('click', () => closeDialog(elements.whatsappDialog));
 elements.whatsappDialog.addEventListener('click', (event) => {
-  if (event.target === elements.whatsappDialog) elements.whatsappDialog.close();
+  if (event.target === elements.whatsappDialog) closeDialog(elements.whatsappDialog);
 });
 
 loadQuestions();

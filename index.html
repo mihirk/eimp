@@ -160,6 +160,10 @@
             <p id="questionContext" class="question-context"></p>
             <h2 id="questionTitle" tabindex="-1"></h2>
             <div id="answerList" class="answer-list" role="radiogroup" aria-labelledby="questionTitle"></div>
+            <button id="mobileInsightButton" class="mobile-insight" type="button" aria-haspopup="dialog" aria-controls="explanationDialog" hidden>
+              <span>Why this matters</span>
+              <span aria-hidden="true">↗</span>
+            </button>
             <div id="questionInsight" class="question-insight" hidden>
               <strong>Why this matters</strong>
               <p id="questionInsightText"></p>
@@ -243,6 +247,16 @@
       <p>Made for everyone who says “I’m about a 3.5.”</p>
       <p>Play more. Guess less.</p>
     </footer>
+
+    <dialog id="explanationDialog" class="explanation-dialog" aria-labelledby="explanationTitle">
+      <button id="closeExplanationDialog" class="share-dialog-close" type="button" aria-label="Close explanation">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+      </button>
+      <p class="eyebrow">Court sense, quickly</p>
+      <h2 id="explanationTitle">Why this matters</h2>
+      <p id="explanationDialogText" class="explanation-dialog-text"></p>
+      <button id="gotItButton" class="button button-primary" type="button">Got it</button>
+    </dialog>
 
     <dialog id="whatsappDialog" class="share-dialog" aria-labelledby="shareDialogTitle">
       <button id="closeShareDialog" class="share-dialog-close" type="button" aria-label="Close sharing options">
