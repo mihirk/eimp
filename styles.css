@@ -815,7 +815,7 @@ h1 {
   line-height: 1.65;
 }
 
-.result-score {
+.result-stamp {
   display: grid;
   width: 155px;
   height: 155px;
@@ -829,26 +829,50 @@ h1 {
   transform: rotate(4deg);
 }
 
-.result-score > span:first-child {
+.result-stamp-value {
   font-family: var(--font-display);
-  font-size: 4.8rem;
+  font-size: 4.5rem;
   font-weight: 700;
   letter-spacing: -0.05em;
-  line-height: 0.7;
+  line-height: 0.75;
 }
 
-.result-score-suffix {
+.result-stamp-meta {
   margin-top: 8px;
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
-.result-score p {
+.result-stamp p {
   margin: 8px 0 0;
   color: #c8d1c5;
   font-size: 0.53rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+
+.elimination-callout {
+  padding: 18px 20px;
+  border-left: 3px solid var(--orange);
+  border-radius: 0 9px 9px 0;
+  background: #fdf2ec;
+}
+
+.elimination-answer {
+  margin: 0 0 8px;
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.elimination-reason {
+  margin: 0;
+  color: #5b4b44;
+  font-size: 0.78rem;
+  line-height: 1.65;
 }
 
 .result-content {
@@ -1244,7 +1268,7 @@ h1 {
     padding: 44px 38px 40px;
   }
 
-  .result-score {
+  .result-stamp {
     width: 170px;
     height: 170px;
   }

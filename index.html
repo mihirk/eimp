@@ -6,12 +6,12 @@
     <meta name="theme-color" content="#17231d" />
     <meta
       name="description"
-      content="Ten practical padel questions. One brutally honest rating. Find out whether you are a Beginner, an Intermediate, or basically Tapia."
+      content="An elimination-style padel reality check. Survive the basic positioning gates to find out whether you are a Beginner, an Intermediate, or basically Tapia."
     />
     <meta property="og:title" content="Everyone is an Intermediate Player" />
     <meta
       property="og:description"
-      content="Think you are intermediate? Let your court sense decide. Take the two-minute padel quiz."
+      content="Think you are intermediate? Survive the early cuts and let your court sense decide."
     />
     <meta property="og:type" content="website" />
     <title>Everyone is an Intermediate Player</title>
@@ -46,7 +46,7 @@
               Player.
             </h1>
             <p class="hero-description">
-              Your bandeja says advanced. Your third ball says otherwise. Answer 10 practical questions and find out where your game really sits.
+              Your bandeja says advanced. Your third ball says otherwise. Start with the basics—survive the early cuts to find out where your game really sits.
             </p>
             <div class="hero-actions">
               <button id="startButton" class="button button-primary" type="button" disabled>
@@ -58,9 +58,9 @@
               <a class="text-link" href="#how-it-works">How does it work?</a>
             </div>
             <div class="hero-footnote" aria-label="Quiz details">
-              <span><strong>10</strong> questions</span>
+              <span>Up to <strong id="heroQuestionCount">11</strong> questions</span>
               <span class="footnote-divider" aria-hidden="true"></span>
-              <span><strong>2</strong> minutes</span>
+              <span><strong>Instant</strong> cuts</span>
               <span class="footnote-divider" aria-hidden="true"></span>
               <span><strong>0</strong> sign-ups</span>
             </div>
@@ -118,18 +118,18 @@
           <div class="method-grid">
             <article class="method-card">
               <span class="method-number">01</span>
-              <h3>Trust your gut</h3>
-              <p>Five tactics and five technique questions. Choose the answer that sounds most like your actual game.</p>
+              <h3>Pass the gates</h3>
+              <p>We start with the non-negotiables: your racquet, taking the net, and moving as a pair. Miss the basics and the quiz ends right there.</p>
             </article>
             <article class="method-card">
               <span class="method-number">02</span>
-              <h3>Get your number</h3>
-              <p>Each answer earns up to 4 points. Your total is scaled to 100, with a separate score for each part of your game.</p>
+              <h3>Prove your court craft</h3>
+              <p>Survive the opening cuts to unlock real match situations—defending short lobs, volley control, overheads, and the chiquita.</p>
             </article>
             <article class="method-card">
               <span class="method-number">03</span>
               <h3>Meet your level</h3>
-              <p>Land in one of nine brutally fair tiers. Perfect scores enter Tapia territory. Everyone else gets a useful next step.</p>
+              <p>No arbitrary score out of 100. Just one of nine brutally honest levels—from Beginner to Tapia—plus one thing to fix next session.</p>
             </article>
           </div>
           <p class="method-disclaimer">
@@ -141,15 +141,15 @@
       <section id="quizScreen" class="screen quiz-screen" aria-labelledby="questionTitle" hidden>
         <div class="quiz-shell">
           <div class="quiz-progress-meta">
-            <p id="questionCount">Question 01 / 10</p>
-            <p id="questionCategory">Tactics</p>
+            <p id="questionCount">Question 01 / 11</p>
+            <p id="questionCategory">Technique</p>
           </div>
           <div
             class="progress-track"
             role="progressbar"
             aria-label="Quiz progress"
             aria-valuemin="0"
-            aria-valuemax="10"
+            aria-valuemax="11"
             aria-valuenow="1"
             id="quizProgress"
           >
@@ -188,15 +188,18 @@
         <div class="result-shell">
           <div class="result-hero">
             <div class="result-heading">
-              <p class="eyebrow eyebrow-light"><span class="eyebrow-dot"></span> The verdict is in</p>
+              <p class="eyebrow eyebrow-light">
+                <span class="eyebrow-dot"></span>
+                <span id="resultEyebrow">The verdict is in</span>
+              </p>
               <p id="resultLevelNumber" class="result-level-number"></p>
               <h2 id="resultTitle" tabindex="-1"></h2>
               <p id="resultSummary" class="result-summary"></p>
             </div>
-            <div class="result-score" aria-label="Your score">
-              <span id="resultScore">0</span>
-              <span class="result-score-suffix">/100</span>
-              <p>Court sense</p>
+            <div id="resultStamp" class="result-stamp" hidden>
+              <span id="resultStampValue" class="result-stamp-value"></span>
+              <span id="resultStampMeta" class="result-stamp-meta"></span>
+              <p id="resultStampLabel"></p>
             </div>
           </div>
 
@@ -211,13 +214,17 @@
               </div>
             </div>
 
-            <section class="breakdown-card" aria-labelledby="breakdownTitle">
+            <section id="breakdownCard" class="breakdown-card" aria-labelledby="breakdownTitle">
               <div class="breakdown-heading">
                 <div>
-                  <p class="eyebrow">Your game, decoded</p>
-                  <h3 id="breakdownTitle">The breakdown</h3>
+                  <p id="breakdownEyebrow" class="eyebrow">Your game, decoded</p>
+                  <h3 id="breakdownTitle">The read</h3>
                 </div>
-                <span id="rawScore" class="raw-score"></span>
+                <span id="breakdownMeta" class="raw-score"></span>
+              </div>
+              <div id="eliminationCallout" class="elimination-callout" hidden>
+                <p id="eliminationAnswer" class="elimination-answer"></p>
+                <p id="eliminationReason" class="elimination-reason"></p>
               </div>
               <div id="categoryBreakdown" class="category-breakdown"></div>
             </section>
@@ -237,7 +244,7 @@
               </button>
               <button id="retakeButton" class="button button-secondary" type="button">Take it again</button>
             </div>
-            <p class="result-disclaimer">Unofficial rating. Official bragging rights only if you hit 100.</p>
+            <p class="result-disclaimer">Unofficial verdict. Official bragging rights only if you reach Tapia.</p>
           </div>
         </div>
       </section>

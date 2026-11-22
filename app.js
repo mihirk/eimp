@@ -9,6 +9,7 @@ const screens = {
 const elements = {
   startButton: document.querySelector('#startButton'),
   startButtonText: document.querySelector('#startButtonText'),
+  heroQuestionCount: document.querySelector('#heroQuestionCount'),
   loadError: document.querySelector('#loadError'),
   headerLink: document.querySelector('.header-link'),
   questionCount: document.querySelector('#questionCount'),
@@ -28,12 +29,21 @@ const elements = {
   backButton: document.querySelector('#backButton'),
   nextButton: document.querySelector('#nextButton'),
   nextButtonText: document.querySelector('#nextButtonText'),
+  resultEyebrow: document.querySelector('#resultEyebrow'),
   resultLevelNumber: document.querySelector('#resultLevelNumber'),
   resultTitle: document.querySelector('#resultTitle'),
   resultSummary: document.querySelector('#resultSummary'),
-  resultScore: document.querySelector('#resultScore'),
+  resultStamp: document.querySelector('#resultStamp'),
+  resultStampValue: document.querySelector('#resultStampValue'),
+  resultStampMeta: document.querySelector('#resultStampMeta'),
+  resultStampLabel: document.querySelector('#resultStampLabel'),
   resultRangeBar: document.querySelector('#resultRangeBar'),
-  rawScore: document.querySelector('#rawScore'),
+  breakdownEyebrow: document.querySelector('#breakdownEyebrow'),
+  breakdownTitle: document.querySelector('#breakdownTitle'),
+  breakdownMeta: document.querySelector('#breakdownMeta'),
+  eliminationCallout: document.querySelector('#eliminationCallout'),
+  eliminationAnswer: document.querySelector('#eliminationAnswer'),
+  eliminationReason: document.querySelector('#eliminationReason'),
   categoryBreakdown: document.querySelector('#categoryBreakdown'),
   coachNoteText: document.querySelector('#coachNoteText'),
   shareButton: document.querySelector('#shareButton'),
@@ -96,11 +106,16 @@ function validateData(data) {
     throw new Error('The question bank is empty or invalid.');
   }
   if (!Array.isArray(data.levels) || data.levels.length === 0) {
-    throw new Error('The score ranges are missing.');
+    throw new Error('The levels are missing.');
   }
   if (!data.categories || typeof data.categories !== 'object') {
-    throw new Error('The score categories are missing.');
+    throw new Error('The categories are missing.');
   }
+  if (!Array.isArray(data.categoryBands) || data.categoryBands.length === 0) {
+    throw new Error('The category bands are missing.');
+  }
+
+  const levelLabels = new Set(data.levels.map((level) => level.label));
 
   data.questions.forEach((question) => {
     if (
@@ -110,9 +125,19 @@ function validateData(data) {
       !data.categories[question.category] ||
       !Array.isArray(question.answers) ||
       question.answers.length < 2 ||
-      question.answers.some(
-        (answer) => typeof answer.text !== 'string' || !Number.isFinite(answer.points) || answer.points < 0,
-      )
+      question.answers.some((answer) => {
+        if (typeof answer.text !== 'string' || !Number.isFinite(answer.points)) return true;
+        if (answer.eliminate) {
+          return (
+            !levelLabels.has(answer.eliminate.level) ||
+            typeof answer.eliminate.summary !== 'string' ||
+            typeof answer.eliminate.reason !== 'string' ||
+            typeof answer.eliminate.tip !== 'string' ||
+            typeof answer.eliminate.cardNote !== 'string'
+          );
+        }
+        return false;
+      })
     ) {
       throw new Error(`Question “${question.id || 'unknown'}” is invalid.`);
     }
@@ -128,6 +153,9 @@ async function loadQuestions() {
     const data = await response.json();
     validateData(data);
     state.data = data;
+    if (elements.heroQuestionCount) {
+      elements.heroQuestionCount.textContent = String(data.questions.length);
+    }
     elements.startButton.disabled = false;
     elements.startButtonText.textContent = 'Find my level';
     elements.loadError.hidden = true;
@@ -254,11 +282,22 @@ function goBack() {
 }
 
 function goNext() {
-  if (state.answers[state.currentQuestion] === undefined) return;
-  if (state.currentQuestion === state.data.questions.length - 1) {
-    showResults();
+  const selectedIndex = state.answers[state.currentQuestion];
+  if (selectedIndex === undefined) return;
+
+  const currentQuestion = state.data.questions[state.currentQuestion];
+  const selectedAnswer = currentQuestion.answers[selectedIndex];
+
+  if (selectedAnswer.eliminate) {
+    showResults(buildEliminationResult(currentQuestion, selectedAnswer, state.currentQuestion + 1));
     return;
   }
+
+  if (state.currentQuestion === state.data.questions.length - 1) {
+    showResults(calculateResult());
+    return;
+  }
+
   state.currentQuestion += 1;
   renderQuestion();
   if (isMobileQuizLayout()) {
@@ -269,10 +308,50 @@ function goNext() {
   elements.questionTitle.focus({ preventScroll: true });
 }
 
+function getCategoryBand(ratio) {
+  const bands = state.data.categoryBands;
+  return bands.find((band) => ratio >= band.min) || bands[bands.length - 1];
+}
+
+function getLadderFill(levelIndex, totalLevels) {
+  if (levelIndex <= 0) return 8;
+  if (levelIndex >= totalLevels - 1) return 100;
+  return Math.round((levelIndex / (totalLevels - 1)) * 100);
+}
+
+function buildEliminationResult(question, selectedAnswer, stoppedAt) {
+  const elimination = selectedAnswer.eliminate;
+  const levelIndex = state.data.levels.findIndex((level) => level.label === elimination.level);
+  if (levelIndex === -1) {
+    throw new Error(`Elimination level “${elimination.level}” is not configured.`);
+  }
+  const level = state.data.levels[levelIndex];
+  const totalLevels = state.data.levels.length;
+
+  return {
+    eliminated: true,
+    stoppedAt,
+    questionCount: state.data.questions.length,
+    level,
+    levelIndex,
+    totalLevels,
+    ladderFill: getLadderFill(levelIndex, totalLevels),
+    summary: elimination.summary,
+    coachNote: elimination.tip,
+    elimination: {
+      questionPrompt: question.prompt,
+      answerText: selectedAnswer.text,
+      reason: elimination.reason,
+      cardNote: elimination.cardNote,
+    },
+    categoryReads: null,
+  };
+}
+
 function calculateResult() {
-  const categoryScores = {};
+  const categoryStats = {};
   Object.keys(state.data.categories).forEach((category) => {
-    categoryScores[category] = { points: 0, maxPoints: 0, percentage: 0 };
+    categoryStats[category] = { points: 0, maxPoints: 0, ratio: 0 };
   });
 
   let points = 0;
@@ -283,32 +362,56 @@ function calculateResult() {
     const questionMax = Math.max(...question.answers.map((answer) => answer.points));
     points += selectedAnswer.points;
     maxPoints += questionMax;
-    categoryScores[question.category].points += selectedAnswer.points;
-    categoryScores[question.category].maxPoints += questionMax;
+    categoryStats[question.category].points += selectedAnswer.points;
+    categoryStats[question.category].maxPoints += questionMax;
   });
 
-  Object.values(categoryScores).forEach((category) => {
-    category.percentage = category.maxPoints === 0 ? 0 : Math.round((category.points / category.maxPoints) * 100);
+  const categoryReads = {};
+  Object.entries(categoryStats).forEach(([categoryId, stats]) => {
+    const ratio = stats.maxPoints === 0 ? 0 : Math.max(0, Math.min(100, Math.round((stats.points / stats.maxPoints) * 100)));
+    stats.ratio = ratio;
+    const band = getCategoryBand(ratio);
+    categoryReads[categoryId] = {
+      bandLabel: band.label,
+      fill: band.fill,
+      internalRatio: ratio,
+    };
   });
 
-  const score = Math.round((points / maxPoints) * 100);
-  const levelIndex = state.data.levels.findIndex((level) => score >= level.min && score <= level.max);
-  if (levelIndex === -1) throw new Error(`No level configured for score ${score}.`);
+  const internalScore = Math.max(0, Math.min(100, Math.round((points / maxPoints) * 100)));
+  const levelIndex = state.data.levels.findIndex((level) => internalScore >= level.min && internalScore <= level.max);
+  if (levelIndex === -1) throw new Error(`No level configured for internal rating ${internalScore}.`);
+
+  const level = state.data.levels[levelIndex];
+  const totalLevels = state.data.levels.length;
+  const isPerfect = levelIndex === totalLevels - 1;
+
+  let coachNote;
+  if (isPerfect) {
+    coachNote = state.data.perfectScoreTip;
+  } else {
+    const weakestCategory = Object.entries(categoryStats).sort((a, b) => a[1].ratio - b[1].ratio)[0][0];
+    coachNote = state.data.categories[weakestCategory].tip;
+  }
 
   return {
-    points,
-    maxPoints,
-    score,
-    categoryScores,
+    eliminated: false,
+    stoppedAt: state.data.questions.length,
     questionCount: state.data.questions.length,
-    level: state.data.levels[levelIndex],
+    level,
     levelIndex,
+    totalLevels,
+    ladderFill: getLadderFill(levelIndex, totalLevels),
+    summary: level.summary,
+    coachNote,
+    elimination: null,
+    categoryReads,
   };
 }
 
 function renderCategoryBreakdown(result) {
   const fragment = document.createDocumentFragment();
-  Object.entries(result.categoryScores).forEach(([categoryId, categoryResult]) => {
+  Object.entries(result.categoryReads).forEach(([categoryId, categoryRead]) => {
     const row = document.createElement('div');
     row.className = 'category-row';
 
@@ -317,14 +420,14 @@ function renderCategoryBreakdown(result) {
     const label = document.createElement('span');
     label.textContent = state.data.categories[categoryId].label;
     const value = document.createElement('span');
-    value.textContent = `${categoryResult.percentage}%`;
+    value.textContent = categoryRead.bandLabel;
     top.append(label, value);
 
     const track = document.createElement('div');
     track.className = 'category-track';
     track.setAttribute('aria-hidden', 'true');
     const bar = document.createElement('span');
-    bar.style.width = `${categoryResult.percentage}%`;
+    bar.style.width = `${categoryRead.fill}%`;
     track.append(bar);
 
     row.append(top, track);
@@ -333,23 +436,39 @@ function renderCategoryBreakdown(result) {
   elements.categoryBreakdown.replaceChildren(fragment);
 }
 
-function showResults() {
-  const result = calculateResult();
+function showResults(result) {
   state.result = result;
 
-  elements.resultLevelNumber.textContent = `Level ${result.levelIndex + 1} of ${state.data.levels.length}`;
+  elements.resultLevelNumber.textContent = `Level ${result.levelIndex + 1} of ${result.totalLevels}`;
   elements.resultTitle.textContent = result.level.label;
-  elements.resultSummary.textContent = result.level.summary;
-  elements.resultScore.textContent = result.score;
-  elements.rawScore.textContent = `${result.points} / ${result.maxPoints} points`;
+  elements.resultSummary.textContent = result.summary;
   elements.resultRangeBar.style.width = '0%';
-  renderCategoryBreakdown(result);
+  elements.coachNoteText.textContent = result.coachNote;
 
-  if (result.score === 100) {
-    elements.coachNoteText.textContent = state.data.perfectScoreTip;
+  if (result.eliminated) {
+    elements.resultEyebrow.textContent = `Early verdict · Stopped at Q${result.stoppedAt} of ${result.questionCount}`;
+    elements.resultStamp.hidden = false;
+    elements.resultStampValue.textContent = `Q${result.stoppedAt}`;
+    elements.resultStampMeta.textContent = `of ${result.questionCount}`;
+    elements.resultStampLabel.textContent = 'Cut short';
+
+    elements.breakdownEyebrow.textContent = 'Why we stopped the quiz';
+    elements.breakdownTitle.textContent = 'The giveaway';
+    elements.breakdownMeta.textContent = `Gate ${String(result.stoppedAt).padStart(2, '0')}`;
+    elements.eliminationCallout.hidden = false;
+    elements.eliminationAnswer.textContent = `“${result.elimination.answerText}”`;
+    elements.eliminationReason.textContent = result.elimination.reason;
+    elements.categoryBreakdown.hidden = true;
   } else {
-    const weakestCategory = Object.entries(result.categoryScores).sort((a, b) => a[1].percentage - b[1].percentage)[0][0];
-    elements.coachNoteText.textContent = state.data.categories[weakestCategory].tip;
+    elements.resultEyebrow.textContent = 'The verdict is in';
+    elements.resultStamp.hidden = true;
+
+    elements.breakdownEyebrow.textContent = 'Your game, decoded';
+    elements.breakdownTitle.textContent = 'The read';
+    elements.breakdownMeta.textContent = `All ${result.questionCount} questions`;
+    elements.eliminationCallout.hidden = true;
+    elements.categoryBreakdown.hidden = false;
+    renderCategoryBreakdown(result);
   }
 
   showScreen('result');
@@ -357,7 +476,7 @@ function showResults() {
   elements.resultTitle.focus({ preventScroll: true });
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      elements.resultRangeBar.style.width = `${result.score}%`;
+      elements.resultRangeBar.style.width = `${result.ladderFill}%`;
     });
   });
 }
@@ -376,15 +495,18 @@ function getShareUrl() {
 }
 
 function getShareText(result) {
-  const breakdown = Object.entries(result.categoryScores)
-    .map(([categoryId, category]) => `${state.data.categories[categoryId].label} ${category.percentage}%`)
+  if (result.eliminated) {
+    return `My padel verdict: ${result.level.label} (stopped on Q${result.stoppedAt} of ${result.questionCount})\n${result.elimination.cardNote}\nThink you can survive the quiz? ${getShareUrl()}`;
+  }
+  const breakdown = Object.entries(result.categoryReads)
+    .map(([categoryId, read]) => `${state.data.categories[categoryId].label}: ${read.bandLabel}`)
     .join(' · ');
-  return `My padel verdict: ${result.level.label} (${result.score}/100)\n${breakdown}\nThink you can beat me? ${getShareUrl()}`;
+  return `My padel verdict: ${result.level.label}\n${breakdown}\nThink you can beat me? ${getShareUrl()}`;
 }
 
 function getShareFileName(result) {
   const level = result.level.label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-  return `padel-verdict-${level}-${result.score}.png`;
+  return `padel-verdict-${level}.png`;
 }
 
 async function getShareImage(result) {

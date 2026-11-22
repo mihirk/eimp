@@ -108,7 +108,7 @@ function drawBackgroundCourt(context) {
   context.restore();
 }
 
-function drawScorePanel(context, result) {
+function drawVerdictPanel(context, result) {
   roundedRect(context, 72, 548, 936, 232, 24);
   context.fillStyle = COLORS.panel;
   context.fill();
@@ -116,55 +116,108 @@ function drawScorePanel(context, result) {
   context.lineWidth = 2;
   context.stroke();
 
+  if (result.eliminated) {
+    context.fillStyle = COLORS.muted;
+    context.font = '700 22px "DM Sans", sans-serif';
+    context.fillText('CUT SHORT AT THE GATES', 112, 600);
+
+    context.fillStyle = COLORS.lime;
+    context.font = '700 162px "Barlow Condensed", Impact, sans-serif';
+    const gateLabel = `Q${result.stoppedAt}`;
+    const gateWidth = context.measureText(gateLabel).width;
+    context.fillText(gateLabel, 108, 742);
+
+    context.fillStyle = COLORS.paper;
+    context.font = '700 34px "DM Sans", sans-serif';
+    context.fillText(`OF ${result.questionCount}`, 126 + gateWidth, 736);
+
+    context.textAlign = 'right';
+    context.fillStyle = COLORS.paper;
+    context.font = '700 28px "DM Sans", sans-serif';
+    context.fillText('INSTANT VERDICT', 966, 613);
+    context.fillStyle = COLORS.muted;
+    context.font = '500 24px "DM Sans", sans-serif';
+    context.fillText(result.elimination.cardNote, 966, 735);
+    context.textAlign = 'left';
+    return;
+  }
+
   context.fillStyle = COLORS.muted;
   context.font = '700 22px "DM Sans", sans-serif';
-  context.fillText('COURT SENSE', 112, 600);
-
-  context.fillStyle = COLORS.lime;
-  context.font = '700 190px "Barlow Condensed", Impact, sans-serif';
-  const score = String(result.score);
-  const scoreWidth = context.measureText(score).width;
-  context.fillText(score, 105, 744);
-
-  context.font = '700 46px "DM Sans", sans-serif';
-  context.fillText('/100', 120 + scoreWidth, 733);
+  context.fillText('TIER LADDER', 112, 600);
 
   context.textAlign = 'right';
   context.fillStyle = COLORS.paper;
-  context.font = '700 28px "DM Sans", sans-serif';
-  context.fillText(`${result.points} / ${result.maxPoints} POINTS`, 966, 613);
-  context.fillStyle = COLORS.muted;
-  context.font = '500 24px "DM Sans", sans-serif';
-  context.fillText(`${result.questionCount} questions. Zero excuses.`, 966, 735);
+  context.font = '700 24px "DM Sans", sans-serif';
+  context.fillText(`SURVIVED ALL ${result.questionCount} QUESTIONS`, 966, 600);
   context.textAlign = 'left';
+
+  context.fillStyle = COLORS.muted;
+  context.font = '700 20px "DM Sans", sans-serif';
+  context.fillText('BEGINNER', 112, 672);
+  context.textAlign = 'right';
+  context.fillText('BRO YOU TAPIA', 966, 672);
+  context.textAlign = 'left';
+
+  roundedRect(context, 112, 694, 854, 24, 12);
+  context.fillStyle = COLORS.line;
+  context.fill();
+
+  roundedRect(context, 112, 694, Math.max(24, (854 * result.ladderFill) / 100), 24, 12);
+  context.fillStyle = COLORS.lime;
+  context.fill();
+
+  context.fillStyle = COLORS.muted;
+  context.font = '500 22px "DM Sans", sans-serif';
+  context.fillText(`Level ${result.levelIndex + 1} of ${result.totalLevels}  ·  No score. Just the truth.`, 112, 756);
 }
 
-function drawBreakdown(context, result, categories) {
+function drawCardDetails(context, result, categories) {
+  if (result.eliminated) {
+    context.fillStyle = COLORS.paper;
+    context.font = '700 34px "Barlow Condensed", Impact, sans-serif';
+    context.fillText('THE NEXT FIX', 72, 854);
+
+    roundedRect(context, 72, 886, 936, 256, 18);
+    context.fillStyle = COLORS.panel;
+    context.fill();
+    context.strokeStyle = COLORS.line;
+    context.lineWidth = 2;
+    context.stroke();
+
+    context.fillStyle = COLORS.lime;
+    context.font = '700 20px "DM Sans", sans-serif';
+    context.fillText('YOUR NEXT SESSION', 110, 940);
+
+    context.fillStyle = COLORS.paper;
+    context.font = '500 28px "DM Sans", sans-serif';
+    wrapText(context, result.coachNote, 110, 996, 860, 42, 3);
+    return;
+  }
+
   context.fillStyle = COLORS.paper;
   context.font = '700 34px "Barlow Condensed", Impact, sans-serif';
-  context.fillText('THE BREAKDOWN', 72, 850);
+  context.fillText('THE READ', 72, 850);
 
-  Object.entries(result.categoryScores).forEach(([categoryId, category], index) => {
-    const labelY = 918 + index * 102;
+  Object.entries(result.categoryReads).forEach(([categoryId, read], index) => {
+    const labelY = 918 + index * 108;
     const barY = labelY + 24;
 
     context.fillStyle = COLORS.paper;
-    context.font = '600 25px "DM Sans", sans-serif';
+    context.font = '600 26px "DM Sans", sans-serif';
     context.fillText(categories[categoryId].label, 72, labelY);
     context.textAlign = 'right';
     context.fillStyle = COLORS.lime;
-    context.font = '700 27px "DM Sans", sans-serif';
-    context.fillText(`${category.percentage}%`, 1008, labelY);
+    context.font = '700 26px "DM Sans", sans-serif';
+    context.fillText(read.bandLabel.toUpperCase(), 1008, labelY);
     context.textAlign = 'left';
 
     roundedRect(context, 72, barY, 936, 12, 6);
     context.fillStyle = COLORS.line;
     context.fill();
-    if (category.percentage > 0) {
-      roundedRect(context, 72, barY, Math.max(12, (936 * category.percentage) / 100), 12, 6);
-      context.fillStyle = COLORS.lime;
-      context.fill();
-    }
+    roundedRect(context, 72, barY, Math.max(12, (936 * read.fill) / 100), 12, 6);
+    context.fillStyle = COLORS.lime;
+    context.fill();
   });
 }
 
@@ -230,7 +283,10 @@ export async function createResultCard(result, categories, siteUrl) {
 
   context.fillStyle = COLORS.lime;
   context.font = '700 21px "DM Sans", sans-serif';
-  context.fillText(`THE VERDICT IS IN  ·  LEVEL ${result.levelIndex + 1} OF 9`, 72, 202);
+  const eyebrow = result.eliminated
+    ? `EARLY VERDICT  ·  STOPPED AT Q${result.stoppedAt} OF ${result.questionCount}`
+    : `THE VERDICT IS IN  ·  LEVEL ${result.levelIndex + 1} OF ${result.totalLevels}`;
+  context.fillText(eyebrow, 72, 202);
 
   const level = result.level.label.toUpperCase();
   const levelSize = fitText(context, level, 936, 146, 76, (size) => `italic 800 ${size}px "Barlow Condensed", Impact, sans-serif`);
@@ -240,10 +296,10 @@ export async function createResultCard(result, categories, siteUrl) {
 
   context.fillStyle = COLORS.muted;
   context.font = '400 27px "DM Sans", sans-serif';
-  wrapText(context, result.level.summary, 72, 415, 900, 39, 3);
+  wrapText(context, result.summary, 72, 415, 900, 39, 3);
 
-  drawScorePanel(context, result);
-  drawBreakdown(context, result, categories);
+  drawVerdictPanel(context, result);
+  drawCardDetails(context, result, categories);
   drawFooter(context, siteUrl);
 
   return new Promise((resolve, reject) => {

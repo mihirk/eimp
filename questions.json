@@ -1,8 +1,8 @@
 {
-  "version": 2,
+  "version": 3,
   "title": "Everyone is an Intermediate Player",
   "scoring": {
-    "method": "Points for each answer are added, divided by the maximum available points, and scaled to 100. Level ranges are inclusive.",
+    "method": "Early questions act as elimination gates for fundamental setup and positioning mistakes. Players who pass the gates are rated internally using weighted answers (lenient on solid alternatives, harsh on costly mistakes) mapped to levels.",
     "scale": 100
   },
   "categories": {
@@ -12,9 +12,15 @@
     },
     "technique": {
       "label": "Technique",
-      "tip": "Use the same racquet regularly and prioritise control over power. Practise compact volleys at the feet, a reliable bandeja to hold the net, and a soft chiquita before adding more smash."
+      "tip": "Stick with one racquet and prioritise control over power. Practise compact volleys at the feet, a reliable bandeja to hold the net, and a soft chiquita before swinging harder."
     }
   },
+  "categoryBands": [
+    { "min": 90, "label": "Dialed in", "fill": 100 },
+    { "min": 70, "label": "Solid", "fill": 76 },
+    { "min": 48, "label": "Work in progress", "fill": 50 },
+    { "min": 0, "label": "Holding you back", "fill": 24 }
+  ],
   "perfectScoreTip": "Nothing. Absolutely nothing. Please send match footage to verify this result—your group chat has some questions too.",
   "levels": [
     {
@@ -69,34 +75,228 @@
       "label": "Bro You Tapia",
       "min": 100,
       "max": 100,
-      "summary": "Perfect score. Apparently you have soft hands, a galaxy brain, and a back glass that owes you money. Please take the rest of the day off."
+      "summary": "Flawless read. Apparently you have soft hands, a galaxy brain, and a back glass that owes you money. Please take the rest of the day off."
     }
   ],
   "questions": [
     {
+      "id": "consistent-racquet",
+      "category": "technique",
+      "context": "Gate 01 · Your setup",
+      "prompt": "Do you play with your own racquet, or do you usually rent one?",
+      "whyItMatters": "Using the same racquet builds a reliable feel for its weight and sweet spot, making soft shots, volleys, and overheads easier to repeat.",
+      "answers": [
+        {
+          "text": "I rent a club racquet almost every time I play",
+          "points": 0,
+          "eliminate": {
+            "level": "Beginner",
+            "cardNote": "Still renting club racquets.",
+            "summary": "We don’t even need the rest of the quiz. If you’re still grabbing a different rental off the club wall every session, you’re firmly in Beginner territory—and that’s totally fine.",
+            "reason": "Renting a different racquet every time you play means your touch, weight feel, and rebound timing reset every session.",
+            "tip": "Buy one forgiving, round-shaped control racquet and play with it every session until the feel becomes automatic."
+          }
+        },
+        {
+          "text": "I own one, though I switch models often or am still adjusting",
+          "points": 6
+        },
+        {
+          "text": "I regularly use the same racquet and know its basic feel",
+          "points": 9
+        },
+        {
+          "text": "I have my own racquet and know how it responds on different shots",
+          "points": 10
+        }
+      ]
+    },
+    {
       "id": "serve-and-run",
       "category": "tactics",
-      "context": "Tactics · After your serve",
-      "prompt": "Do you serve and instantly sprint to the net no matter what?",
-      "whyItMatters": "Following your serve forward helps you take the net, but a split-step as your opponent swings lets you handle low returns—or drop back if they lob.",
+      "context": "Gate 02 · After your serve",
+      "prompt": "After you serve, do you come forward to the net to volley?",
+      "whyItMatters": "Padel is won at the net. Following your serve forward puts pressure on the returner—just add a split-step as they swing so you can handle low balls or lobs.",
       "answers": [
-        { "text": "Yes—I sprint straight to the net without slowing down", "points": 2 },
-        { "text": "I move in under control, split-step as they hit, and read the return", "points": 4 },
-        { "text": "No—I usually stay back near the baseline after serving", "points": 1 },
-        { "text": "I mostly stay wherever I land and just react to the ball", "points": 0 }
+        {
+          "text": "I move in under control, split-step as they hit, and read the return",
+          "points": 10
+        },
+        {
+          "text": "Yes—I sprint straight to the net without slowing down",
+          "points": 7
+        },
+        {
+          "text": "No—I usually stay back near the baseline after serving",
+          "points": 0,
+          "eliminate": {
+            "level": "Beginner",
+            "cardNote": "Refuses to come forward to volley.",
+            "summary": "That’s all we needed to hear. Serving and staying back at the baseline hands control of the point straight to your opponents.",
+            "reason": "Padel isn’t baseline tennis. If you don’t come forward after your serve to take the net and volley, you’re giving up the biggest advantage in the sport.",
+            "tip": "Next match, follow every single serve forward. Stop and split-step just before your opponent contacts the return so you’re balanced for the first volley."
+          }
+        },
+        {
+          "text": "I mostly stay wherever I land and just react to the ball",
+          "points": 0,
+          "eliminate": {
+            "level": "Beginner",
+            "cardNote": "Standing still after the serve.",
+            "summary": "Verdict locked in early. Standing around after your serve leaves you stranded in no-man’s-land instead of taking the net.",
+            "reason": "Moving forward with purpose after serving is one of the first fundamentals of padel.",
+            "tip": "Treat your serve and your first three steps forward as one single motion—serve, move in, and split-step ready to volley."
+          }
+        }
+      ]
+    },
+    {
+      "id": "partner-lobbed-after-serve",
+      "category": "tactics",
+      "context": "Gate 03 · Moving as a pair",
+      "prompt": "You serve, and the returner hits a deep lob over your partner at the net. What happens next?",
+      "whyItMatters": "In padel you attack and defend as a connected pair. Your partner covers a lob over their own side while you drop back together so you never leave a gap down the middle.",
+      "answers": [
+        {
+          "text": "My partner chases it while I push forward to hold the net alone (one up, one back)",
+          "points": 0,
+          "eliminate": {
+            "level": "Beginner",
+            "cardNote": "Playing one up, one back like tennis.",
+            "summary": "Classic tennis reflex—and an instant Beginner call. In padel, playing one forward and one back opens a motorway straight down the middle.",
+            "reason": "Leaving one player at the net while the other defends deep splits the court wide open for easy angles and body shots.",
+            "tip": "Imagine an invisible rope tied between you and your partner. When they get lobbed, you both drop back behind the line together."
+          }
+        },
+        {
+          "text": "My partner covers their side while I drop back so we defend together",
+          "points": 10
+        },
+        {
+          "text": "I cross behind my partner to chase it while they stay up at the net",
+          "points": 0,
+          "eliminate": {
+            "level": "Beginner",
+            "cardNote": "Tennis formation: one up, one back.",
+            "summary": "Instant verdict. Crossing behind your partner while they camp at the net leaves you in a tennis formation that gets picked apart in padel.",
+            "reason": "Your partner should cover the lob over their own side while you retreat on yours—never split one forward and one back.",
+            "tip": "Stop crossing behind your partner on standard lobs. Let them cover their side and retreat straight back on your own side so you defend as a pair."
+          }
+        },
+        {
+          "text": "My partner covers it, though I often hesitate and get stuck in no-man’s-land",
+          "points": 6
+        }
+      ]
+    },
+    {
+      "id": "hold-the-net",
+      "category": "tactics",
+      "context": "Gate 04 · Holding the net",
+      "prompt": "You’re at the net and your opponents hit a medium lob—not deep, just above head height. What do you do?",
+      "whyItMatters": "You worked hard to earn the net. Backing off on a playable lob gives up the attacking position for free instead of keeping your opponents pinned at the back.",
+      "answers": [
+        {
+          "text": "Stay up and hit a controlled overhead to hold the net, even if it’s not pretty",
+          "points": 8
+        },
+        {
+          "text": "Let it bounce, back off to the baseline, and give up the net",
+          "points": 0,
+          "eliminate": {
+            "level": "Beginner",
+            "cardNote": "Gave up the net on a playable lob.",
+            "summary": "No need to go further. Giving up the net the moment a ball goes above your head is one of the clearest Beginner habits in padel.",
+            "reason": "Surrendering the net on a medium lob hands control straight back to your opponents without making them earn it.",
+            "tip": "Whenever a lob is short enough to reach overhead, turn sideways, move back under it, and play a calm controlled overhead so you can step right back into the net."
+          }
+        },
+        {
+          "text": "Set up early, hit a controlled bandeja or víbora, and keep net position",
+          "points": 10
+        },
+        {
+          "text": "Back away and wait for it off the glass so I can hit a safer groundstroke",
+          "points": 0,
+          "eliminate": {
+            "level": "Beginner+",
+            "cardNote": "Gave up the net for a safe bounce.",
+            "summary": "Close—you know your way around the glass, which gets you Beginner+, but surrendering the net on a reachable lob stops your rating right here.",
+            "reason": "Letting a medium lob drop just to avoid hitting an overhead gives away the most valuable real estate on the court.",
+            "tip": "Practise a simple, slow defensive overhead (bandeja) aimed deep to the middle so you stop retreating to the baseline every time they lob."
+          }
+        }
       ]
     },
     {
       "id": "preferred-side",
       "category": "tactics",
-      "context": "Tactics · Moving as a pair",
-      "prompt": "Do you have a preferred side—and move across the court with your partner?",
-      "whyItMatters": "In padel you defend and attack as a connected pair. Shifting side-to-side together closes the middle and prevents easy passing shots between you.",
+      "context": "Gate 05 · Court awareness",
+      "prompt": "Do you have a preferred side—and shift across the court with your partner?",
+      "whyItMatters": "Padel pairs move like windscreen wipers. Knowing your side and sliding together closes the middle and shuts down easy passing shots.",
       "answers": [
-        { "text": "Not really—I stand wherever I start and chase nearby balls", "points": 0 },
-        { "text": "I prefer one side, though my positioning is mostly guesswork", "points": 2 },
-        { "text": "I know my side and basic spots, though we still leave middle gaps", "points": 3 },
-        { "text": "Yes—I know my side’s role and shift side-to-side with my partner", "points": 4 }
+        {
+          "text": "I know my side and basic spots, though we still leave occasional middle gaps",
+          "points": 8
+        },
+        {
+          "text": "Not really—I stand wherever I start and chase whatever ball is nearby",
+          "points": 0,
+          "eliminate": {
+            "level": "Beginner",
+            "cardNote": "No court positioning—just chasing balls.",
+            "summary": "Early call: Beginner. Chasing whichever ball comes closest without owning a side or moving with your partner leaves the court wide open.",
+            "reason": "Without a side and basic side-to-side coordination, every rally turns into two singles players bumping into each other.",
+            "tip": "Pick a side (left or right) for your next five matches and focus on moving left and right in sync with your partner whenever the ball crosses the net."
+          }
+        },
+        {
+          "text": "Yes—I know my side’s role and shift side-to-side with my partner",
+          "points": 10
+        },
+        {
+          "text": "I prefer one side, though my positioning is mostly guesswork",
+          "points": 5
+        }
+      ]
+    },
+    {
+      "id": "move-after-return",
+      "category": "tactics",
+      "context": "Gate 06 · Returning serve",
+      "prompt": "When returning serve, when do you and your partner move up to the net?",
+      "whyItMatters": "Both opponents already hold the net on your return. Camping at the baseline all point keeps you trapped in defence, while running in alone creates a broken formation. Earn the net together with a deep lob.",
+      "answers": [
+        {
+          "text": "Only together, after a deep lob or weak reply pushes the opponents back",
+          "points": 10
+        },
+        {
+          "text": "I usually stay back at the baseline all point—I’d rather rally from the back",
+          "points": 0,
+          "eliminate": {
+            "level": "Beginner",
+            "cardNote": "Baseline camper—won’t take the net.",
+            "summary": "Verdict is in. Staying glued to the baseline all point turns padel into a losing game of target practice for the net players.",
+            "reason": "Defending from the back is only temporary—the whole goal of defence in padel is to earn your way forward to the net.",
+            "tip": "Next time you hit a deep lob that pushes your opponents past the service line, jog forward together with your partner and take the net."
+          }
+        },
+        {
+          "text": "I run up alone whenever I hit a hard return",
+          "points": 0,
+          "eliminate": {
+            "level": "Beginner",
+            "cardNote": "Rushing the net alone off a return.",
+            "summary": "Instant Beginner verdict. Sprinting to the net alone behind a hard return splits your pair one-up-one-back and feeds your opponents an easy volley.",
+            "reason": "Both opponents are already at the net when you return. Running in solo leaves a giant hole behind you and gets punished immediately.",
+            "tip": "Stay back with your partner on the return, wait for a deep lob that pushes them off the net, and then move up together."
+          }
+        },
+        {
+          "text": "Mostly after a good lob, though we sometimes mistime moving up together",
+          "points": 7
+        }
       ]
     },
     {
@@ -104,51 +304,24 @@
       "category": "tactics",
       "context": "Tactics · Defending a short lob",
       "prompt": "You hit a short lob from the back, giving the opponent an easy overhead. What do you do?",
-      "whyItMatters": "Backing up against the glass jams you on rebounds, and rushing forward leaves you exposed. Staying low behind the line gives you room to block or read the glass.",
+      "whyItMatters": "Backing right against the glass jams you on rebounds, and rushing forward into a smash is pure chaos. Stay low behind the line to block or read the glass.",
       "answers": [
-        { "text": "Back right up against the back glass to defend", "points": 1 },
-        { "text": "Stay behind the line, though I mostly guess and react", "points": 2 },
-        { "text": "Hold behind the line, split-step low, and read the shot or glass", "points": 4 },
-        { "text": "Rush toward the net anyway to try to put them off", "points": 0 }
-      ]
-    },
-    {
-      "id": "partner-lobbed-after-serve",
-      "category": "tactics",
-      "context": "Tactics · Moving together",
-      "prompt": "You serve, and the returner hits a deep lob over your partner at the net. What should happen?",
-      "whyItMatters": "Your partner covers a lob over their own side so your court stays balanced. Dropping back together avoids leaving one player stranded at the net.",
-      "answers": [
-        { "text": "I cross behind my partner to chase it while they stay up", "points": 0 },
-        { "text": "My partner covers their side while I drop back so we defend together", "points": 4 },
-        { "text": "My partner chases it while I push all the way to the net alone", "points": 1 },
-        { "text": "My partner covers it, though I often get stuck in no-man’s-land", "points": 2 }
-      ]
-    },
-    {
-      "id": "move-after-return",
-      "category": "tactics",
-      "context": "Tactics · Returning serve",
-      "prompt": "When returning serve, when should you and your partner move up to the net?",
-      "whyItMatters": "Both opponents already hold the net on your return. Running in behind a normal groundstroke feeds them an easy volley—earn the net first with a good lob.",
-      "answers": [
-        { "text": "After almost every return—the goal is always to rush forward", "points": 1 },
-        { "text": "I usually stay back all point unless they hit a super short ball", "points": 2 },
-        { "text": "Only after a deep lob or weak reply pushes the opponents back", "points": 4 },
-        { "text": "I run up alone whenever I hit a hard return", "points": 0 }
-      ]
-    },
-    {
-      "id": "consistent-racquet",
-      "category": "technique",
-      "context": "Technique · Your setup",
-      "prompt": "Do you play with your own racquet, or do you usually rent one?",
-      "whyItMatters": "Using the same racquet builds a reliable feel for its weight and response, making soft shots, volleys, and overheads easier to repeat.",
-      "answers": [
-        { "text": "I use a different rental almost every time I play", "points": 0 },
-        { "text": "I own one, though I switch models often or am still adjusting", "points": 2 },
-        { "text": "I regularly use the same racquet and know its basic feel", "points": 3 },
-        { "text": "I have my own racquet and know how it responds on different shots", "points": 4 }
+        {
+          "text": "Hold behind the line, split-step low, and read the shot or glass",
+          "points": 10
+        },
+        {
+          "text": "Back right up against the back glass to defend",
+          "points": -4
+        },
+        {
+          "text": "Stay behind the line, though I mostly guess and react",
+          "points": 6
+        },
+        {
+          "text": "Rush toward the net anyway to try to put them off",
+          "points": -8
+        }
       ]
     },
     {
@@ -158,10 +331,22 @@
       "prompt": "A fast ball comes at you at the net. What does your volley usually look like?",
       "whyItMatters": "A short, compact volley in front of your body uses the opponent’s pace and keeps the ball low when you have no time for a big swing.",
       "answers": [
-        { "text": "I take a full swing and try to add even more pace", "points": 0 },
-        { "text": "I can block it, but my volleys often float or sit up", "points": 2 },
-        { "text": "I use a short, compact volley and usually keep the ball low", "points": 3 },
-        { "text": "I stay compact and balanced, and can place it deep, soft, or angled", "points": 4 }
+        {
+          "text": "I use a short, compact volley and usually keep the ball low",
+          "points": 9
+        },
+        {
+          "text": "I take a full swing and try to add even more pace",
+          "points": -8
+        },
+        {
+          "text": "I can block it, though my volleys often float or sit up",
+          "points": 6
+        },
+        {
+          "text": "I stay compact and balanced, and can place it deep, soft, or angled",
+          "points": 10
+        }
       ]
     },
     {
@@ -171,10 +356,22 @@
       "prompt": "Can you aim your volleys at the opponents’ feet or into the middle during a match?",
       "whyItMatters": "Volleys at the feet force opponents to hit upward, while the middle creates hesitation between partners. Aiming low beats hitting hard.",
       "answers": [
-        { "text": "I mostly aim anywhere inside the court and hope for the best", "points": 0 },
-        { "text": "I can aim there in practice, but not consistently in matches", "points": 2 },
-        { "text": "I can reliably find the feet or middle in normal rallies", "points": 3 },
-        { "text": "I can choose the feet, middle, or an angle based on their positioning", "points": 4 }
+        {
+          "text": "I can aim there in practice, though not consistently in matches",
+          "points": 6
+        },
+        {
+          "text": "I can reliably find the feet or middle in normal rallies",
+          "points": 9
+        },
+        {
+          "text": "I mostly aim anywhere inside the court and hope for the best",
+          "points": -7
+        },
+        {
+          "text": "I can choose the feet, middle, or an angle based on their positioning",
+          "points": 10
+        }
       ]
     },
     {
@@ -184,10 +381,22 @@
       "prompt": "Can you choose between different overheads, or does every high ball become a smash?",
       "whyItMatters": "Different overheads solve different problems: a controlled bandeja keeps you at the net on decent lobs, while a smash attacks short, easy balls.",
       "answers": [
-        { "text": "Every overhead is a full-power flat smash", "points": 0 },
-        { "text": "I have a smash, though the bandeja and víbora are mostly guesswork", "points": 2 },
-        { "text": "I can hit a bandeja to keep the net and smash easy short balls", "points": 3 },
-        { "text": "I choose between bandeja, víbora, and flat or kick smashes by ball height", "points": 4 }
+        {
+          "text": "Every overhead is a full-power flat smash",
+          "points": -8
+        },
+        {
+          "text": "I can hit a bandeja to keep the net and smash easy short balls",
+          "points": 9
+        },
+        {
+          "text": "I have a smash, though the bandeja and víbora are mostly guesswork",
+          "points": 6
+        },
+        {
+          "text": "I choose between bandeja, víbora, and flat or kick smashes by ball height",
+          "points": 10
+        }
       ]
     },
     {
@@ -197,10 +406,22 @@
       "prompt": "Can you execute a chiquita—a soft shot that dips at the net players’ feet?",
       "whyItMatters": "A good chiquita dips below net height at your opponents’ feet, forcing them to volley upward so you and your partner can move forward.",
       "answers": [
-        { "text": "I am not sure what a chiquita is or have never tried one", "points": 0 },
-        { "text": "I know the shot, though it often floats too high", "points": 2 },
-        { "text": "I can consistently dip it toward their feet in matches", "points": 3 },
-        { "text": "I can dip it at their feet and move forward behind it", "points": 4 }
+        {
+          "text": "I know the shot, though it still floats too high sometimes",
+          "points": 5
+        },
+        {
+          "text": "I can dip it at their feet and move forward behind it",
+          "points": 10
+        },
+        {
+          "text": "I am not sure what a chiquita is or have never tried one",
+          "points": -3
+        },
+        {
+          "text": "I can consistently dip it toward their feet in matches",
+          "points": 9
+        }
       ]
     }
   ]
