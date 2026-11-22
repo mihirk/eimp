@@ -119,7 +119,7 @@ function drawVerdictPanel(context, result) {
   if (result.eliminated) {
     context.fillStyle = COLORS.muted;
     context.font = '700 22px "DM Sans", sans-serif';
-    context.fillText('CUT SHORT AT THE GATES', 112, 600);
+    context.fillText('QUIZ ENDED EARLY', 112, 600);
 
     context.fillStyle = COLORS.lime;
     context.font = '700 162px "Barlow Condensed", Impact, sans-serif';

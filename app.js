@@ -9,7 +9,6 @@ const screens = {
 const elements = {
   startButton: document.querySelector('#startButton'),
   startButtonText: document.querySelector('#startButtonText'),
-  heroQuestionCount: document.querySelector('#heroQuestionCount'),
   loadError: document.querySelector('#loadError'),
   headerLink: document.querySelector('.header-link'),
   questionCount: document.querySelector('#questionCount'),
@@ -153,9 +152,6 @@ async function loadQuestions() {
     const data = await response.json();
     validateData(data);
     state.data = data;
-    if (elements.heroQuestionCount) {
-      elements.heroQuestionCount.textContent = String(data.questions.length);
-    }
     elements.startButton.disabled = false;
     elements.startButtonText.textContent = 'Find my level';
     elements.loadError.hidden = true;
@@ -454,7 +450,7 @@ function showResults(result) {
 
     elements.breakdownEyebrow.textContent = 'Why we stopped the quiz';
     elements.breakdownTitle.textContent = 'The giveaway';
-    elements.breakdownMeta.textContent = `Gate ${String(result.stoppedAt).padStart(2, '0')}`;
+    elements.breakdownMeta.textContent = `Question ${String(result.stoppedAt).padStart(2, '0')}`;
     elements.eliminationCallout.hidden = false;
     elements.eliminationAnswer.textContent = `“${result.elimination.answerText}”`;
     elements.eliminationReason.textContent = result.elimination.reason;

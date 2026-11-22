@@ -82,7 +82,7 @@
     {
       "id": "consistent-racquet",
       "category": "technique",
-      "context": "Gate 01 · Your setup",
+      "context": "Technique · Your setup",
       "prompt": "Do you play with your own racquet, or do you usually rent one?",
       "whyItMatters": "Using the same racquet builds a reliable feel for its weight and sweet spot, making soft shots, volleys, and overheads easier to repeat.",
       "answers": [
@@ -114,7 +114,7 @@
     {
       "id": "serve-and-run",
       "category": "tactics",
-      "context": "Gate 02 · After your serve",
+      "context": "Tactics · After your serve",
       "prompt": "After you serve, do you come forward to the net to volley?",
       "whyItMatters": "Padel is won at the net. Following your serve forward puts pressure on the returner—just add a split-step as they swing so you can handle low balls or lobs.",
       "answers": [
@@ -153,7 +153,7 @@
     {
       "id": "partner-lobbed-after-serve",
       "category": "tactics",
-      "context": "Gate 03 · Moving as a pair",
+      "context": "Tactics · Moving as a pair",
       "prompt": "You serve, and the returner hits a deep lob over your partner at the net. What happens next?",
       "whyItMatters": "In padel you attack and defend as a connected pair. Your partner covers a lob over their own side while you drop back together so you never leave a gap down the middle.",
       "answers": [
@@ -192,7 +192,7 @@
     {
       "id": "hold-the-net",
       "category": "tactics",
-      "context": "Gate 04 · Holding the net",
+      "context": "Tactics · Holding the net",
       "prompt": "You’re at the net and your opponents hit a medium lob—not deep, just above head height. What do you do?",
       "whyItMatters": "You worked hard to earn the net. Backing off on a playable lob gives up the attacking position for free instead of keeping your opponents pinned at the back.",
       "answers": [
@@ -231,7 +231,7 @@
     {
       "id": "preferred-side",
       "category": "tactics",
-      "context": "Gate 05 · Court awareness",
+      "context": "Tactics · Court awareness",
       "prompt": "Do you have a preferred side—and shift across the court with your partner?",
       "whyItMatters": "Padel pairs move like windscreen wipers. Knowing your side and sliding together closes the middle and shuts down easy passing shots.",
       "answers": [
@@ -263,7 +263,7 @@
     {
       "id": "move-after-return",
       "category": "tactics",
-      "context": "Gate 06 · Returning serve",
+      "context": "Tactics · Returning serve",
       "prompt": "When returning serve, when do you and your partner move up to the net?",
       "whyItMatters": "Both opponents already hold the net on your return. Camping at the baseline all point keeps you trapped in defence, while running in alone creates a broken formation. Earn the net together with a deep lob.",
       "answers": [
